@@ -17,6 +17,7 @@ pipeline {
         stage("BuildPushContainer") {
             steps {
               sh """
+                aws --version
                 echo "${params.ECRURI}"
                 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${params.ECRURI}
                 
