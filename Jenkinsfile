@@ -18,9 +18,9 @@ pipeline {
             steps {
               sh """
                 echo "${params.ECRURI}"
-                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${params.ECRURI}
+                aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${params.ECRURI}
  	              docker build -t scikit-byo:${env.BUILD_ID} .
-                docker tag scikit-byo:${env.BUILD_ID} ${params.ECRURI}:${env.BUILD_ID} 
+                docker tag mlops-byo:${env.BUILD_ID} ${params.ECRURI}:${env.BUILD_ID} 
                 docker push ${params.ECRURI}:${env.BUILD_ID}
                 echo ${params.S3_PACKAGED_LAMBDA}
               """
@@ -39,7 +39,7 @@ pipeline {
             steps {
               script {
                     def response = sh """ 
-                    aws lambda invoke --function-name ${params.LAMBDA_CHECK_STATUS_TRAINING} --cli-binary-format raw-in-base64-out --region us-east-1 --payload '{"TrainingJobName": "${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID}"}' response.json
+                    aws lambda invoke --function-name ${params.LAMBDA_CHECK_STATUS_TRAINING} --cli-binary-format raw-in-base64-out --region ap-south-1 --payload '{"TrainingJobName": "${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID}"}' response.json
                     sleep 240
                     """
                     
@@ -62,7 +62,7 @@ pipeline {
             steps { 
               script {
                  def response = sh """ 
-                 aws lambda invoke --function-name ${params.LAMBDA_EVALUATE_MODEL} --cli-binary-format raw-in-base64-out --region us-east-1 --payload '{"EndpointName": "'${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID}'-Test", "Body": {"Payload": {"S3TestData": "${params.S3_TEST_DATA}", "S3Key": "test/iris.csv"}}}' evalresponse.json
+                 aws lambda invoke --function-name ${params.LAMBDA_EVALUATE_MODEL} --cli-binary-format raw-in-base64-out --region ap-south-1 --payload '{"EndpointName": "'${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID}'-Test", "Body": {"Payload": {"S3TestData": "${params.S3_TEST_DATA}", "S3Key": "test/iris.csv"}}}' evalresponse.json
               """
               }
             }
