@@ -19,10 +19,12 @@ pipeline {
               sh """
                 aws --version
                 echo "${params.ECRURI}"
-                aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${params.ECRURI}
+                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 763104351884.dkr.ecr.ap-south-1.amazonaws.com
                 
  	            docker build -t mlops-byo:${env.BUILD_ID} .
                 docker tag mlops-byo:${env.BUILD_ID} ${params.ECRURI}:${env.BUILD_ID} 
+                aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${params.ECRURI}
+
                 docker push ${params.ECRURI}:${env.BUILD_ID}
                 echo ${params.S3_PACKAGED_LAMBDA}
               """
