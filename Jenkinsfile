@@ -21,7 +21,7 @@ pipeline {
                 echo "${params.ECRURI}"
                 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${params.ECRURI}
                 
- 	            docker build -t scikit-byo:${env.BUILD_ID} .
+ 	            docker build -t mlops-byo:${env.BUILD_ID} .
                 docker tag mlops-byo:${env.BUILD_ID} ${params.ECRURI}:${env.BUILD_ID} 
                 docker push ${params.ECRURI}:${env.BUILD_ID}
                 echo ${params.S3_PACKAGED_LAMBDA}
