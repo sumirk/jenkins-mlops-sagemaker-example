@@ -31,6 +31,20 @@ pipeline {
             }
         }
         
+        stage("ETL") {
+            steps { 
+              sh """
+              echo "${params.DATASOURCEBUCKET}"
+              echo "${params.DATATARGETBUCKET}"
+              aws glue start_job_run(JobName=job_name, Arguments={ \
+                '--S3_INPUT_BUCKET': data_bucket, \
+                '--S3_INPUT_KEY_PREFIX': 'input/raw', \
+                '--S3_OUTPUT_BUCKET': output_bucket, \
+                '--S3_OUTPUT_KEY_PREFIX': executionId+'/input') \
+              """
+             }
+        }
+        
         stage("TrainModel") {
             steps { 
               sh """
