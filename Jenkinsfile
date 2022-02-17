@@ -38,9 +38,9 @@ pipeline {
               echo "${params.DATATARGETBUCKET}"
               aws glue start_job_run(JobName=job_name, Arguments={ \
                 '--S3_INPUT_BUCKET': data_bucket, \
-                '--S3_INPUT_KEY_PREFIX': 'input/raw', \
+                '--S3_INPUT_KEY_PREFIX': 'sourcedata', \
                 '--S3_OUTPUT_BUCKET': output_bucket, \
-                '--S3_OUTPUT_KEY_PREFIX': executionId+'/input') \
+                '--S3_OUTPUT_KEY_PREFIX': ${env.BUILD_ID}+'/input/training/') \
               """
              }
         }
