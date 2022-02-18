@@ -39,7 +39,7 @@ pipeline {
               echo "${params.DATASOURCEBUCKET}"
               echo "${params.DATATARGETBUCKET}"
               echo "${s3TrainUri}"
-              aws glue start-job-run --job-name jenkins-mlops --arguments {"--S3_INPUT_BUCKET": ${params.DATASOURCEBUCKET}, "--S3_INPUT_KEY_PREFIX": "/sourcedata", "--S3_OUTPUT_BUCKET": ${params.DATATARGETBUCKET}, "--S3_OUTPUT_KEY_PREFIX": ${s3OutputKey}}              
+              aws glue start-job-run --job-name jenkins-mlops --arguments S3_INPUT_BUCKET=${params.DATASOURCEBUCKET},S3_INPUT_KEY_PREFIX="/sourcedata",S3_OUTPUT_BUCKET"=${params.DATATARGETBUCKET},S3_OUTPUT_KEY_PREFIX"="/${s3OutputKey}"             
               """
              }
         }
