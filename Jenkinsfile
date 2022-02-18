@@ -36,7 +36,7 @@ pipeline {
               sh """
               echo "${params.DATASOURCEBUCKET}"
               echo "${params.DATATARGETBUCKET}"
-              def s3TrainUri = ${params.DATATARGETBUCKET} + "/" + ${env.BUILD_ID} + "/input/training/"
+              def s3TrainUri = "${params.DATATARGETBUCKET} + '/' + ${env.BUILD_ID} + '/input/training/'"
               
               aws glue start_job_run(JobName=job_name, Arguments={ \
                 '--S3_INPUT_BUCKET': ${params.DATASOURCEBUCKET}, \
