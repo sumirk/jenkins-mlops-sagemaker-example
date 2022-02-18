@@ -36,10 +36,13 @@ pipeline {
               sh """
               echo "${params.DATASOURCEBUCKET}"
               echo "${params.DATATARGETBUCKET}"
+              def s3TrainUri = ${params.DATATARGETBUCKET} + "/" + ${env.BUILD_ID} + "/input/training/"
+              echo "${s3TrainUri}"
+              
               aws glue start_job_run(JobName=job_name, Arguments={ \
-                '--S3_INPUT_BUCKET': data_bucket, \
-                '--S3_INPUT_KEY_PREFIX': 'sourcedata', \
-                '--S3_OUTPUT_BUCKET': output_bucket, \
+                '--S3_INPUT_BUCKET': ${params.DATASOURCEBUCKET}, \
+                '--S3_INPUT_KEY_PREFIX': '/sourcedata', \
+                '--S3_OUTPUT_BUCKET': ${params.DATATARGETBUCKET}, \
                 '--S3_OUTPUT_KEY_PREFIX': ${env.BUILD_ID}+'/input/training/') \
               """
              }
@@ -48,7 +51,7 @@ pipeline {
         stage("TrainModel") {
             steps { 
               sh """
-               aws sagemaker create-training-job --training-job-name ${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID} --algorithm-specification TrainingImage="${params.ECRURI}:${env.BUILD_ID}",TrainingInputMode="File" --role-arn ${params.SAGEMAKER_EXECUTION_ROLE} --input-data-config '{"ChannelName": "training", "DataSource": { "S3DataSource": { "S3DataType": "S3Prefix", "S3Uri": "${params.S3_TRAIN_DATA}"}}}' --resource-config InstanceType='ml.c4.2xlarge',InstanceCount=1,VolumeSizeInGB=5 --output-data-config S3OutputPath='${S3_MODEL_ARTIFACTS}' --stopping-condition MaxRuntimeInSeconds=3600
+               aws sagemaker create-training-job --training-job-name ${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID} --algorithm-specification TrainingImage="${params.ECRURI}:${env.BUILD_ID}",TrainingInputMode="File" --role-arn ${params.SAGEMAKER_EXECUTION_ROLE} --input-data-config '{"ChannelName": "training", "DataSource": { "S3DataSource": { "S3DataType": "S3Prefix", "S3Uri": "${params.DATATARGETBUCKET}/"}}}' --resource-config InstanceType='ml.c4.2xlarge',InstanceCount=1,VolumeSizeInGB=5 --output-data-config S3OutputPath='${S3_MODEL_ARTIFACTS}' --stopping-condition MaxRuntimeInSeconds=3600
               """
              }
         }
