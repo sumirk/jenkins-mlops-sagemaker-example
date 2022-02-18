@@ -5,7 +5,7 @@ pipeline {
     environment {
         AWS_ECR_LOGIN = 'true'
         DOCKER_CONFIG= "${params.JENKINSHOME}"
-        s3TrainUri = "${params.DATATARGETBUCKET} + '/' + ${env.BUILD_ID} + '/input/training/'"
+        s3TrainUri = "${params.DATATARGETBUCKET}/${env.BUILD_ID}/input/training/"
     }
 
     stages {
@@ -38,7 +38,7 @@ pipeline {
               echo "${params.DATASOURCEBUCKET}"
               echo "${params.DATATARGETBUCKET}"
               echo "${s3TrainUri}"
-              aws glue start_job_run(JobName=job_name, Arguments={'--S3_INPUT_BUCKET': ${params.DATASOURCEBUCKET}, '--S3_INPUT_KEY_PREFIX': '/sourcedata', '--S3_OUTPUT_BUCKET': ${params.DATATARGETBUCKET}, '--S3_OUTPUT_KEY_PREFIX': ${env.BUILD_ID}+'/input/training/')
+              aws glue start_job_run(JobName='jenkins-mlops', Arguments={'--S3_INPUT_BUCKET': ${params.DATASOURCEBUCKET}, '--S3_INPUT_KEY_PREFIX': '/sourcedata', '--S3_OUTPUT_BUCKET': ${params.DATATARGETBUCKET}, '--S3_OUTPUT_KEY_PREFIX': ${env.BUILD_ID}+'/input/training/')
               """
              }
         }
