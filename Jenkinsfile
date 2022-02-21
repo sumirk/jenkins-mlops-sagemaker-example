@@ -39,7 +39,7 @@ pipeline {
               echo "${params.DATASOURCEBUCKET}"
               echo "${params.DATATARGETBUCKET}"
               echo "${s3TrainUri}"
-              aws ecs run-task --cluster jenkins-mlops --task-definition  etl-jenkins-mlops:1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=["subnet-a103e5c8"],securityGroups=["sg-020056935ecf10e81"],assignPublicIp=ENABLED}" --overrides="containerOverrides=[{ "name"="etl-jenkins-mlops-image","command"=["python": "/app/preprocess.py", "S3_INPUT_BUCKET=${params.DATASOURCEBUCKET}" "S3_INPUT_KEY_PREFIX='/sourcedata'" "S3_OUTPUT_BUCKET=${params.DATATARGETBUCKET}" "S3_OUTPUT_KEY_PREFIX='/${s3OutputKey}'" }]" --region=ap-south-1
+              aws ecs run-task --cluster jenkins-mlops --task-definition  etl-jenkins-mlops:1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=["subnet-a103e5c8"],securityGroups=["sg-020056935ecf10e81"],assignPublicIp=ENABLED}" --overrides="containerOverrides=[{ "name"="etl-jenkins-mlops-image","command"=["python", "/app/preprocess.py", "S3_INPUT_BUCKET=${params.DATASOURCEBUCKET}", "S3_INPUT_KEY_PREFIX='/sourcedata'", "S3_OUTPUT_BUCKET=${params.DATATARGETBUCKET}", "S3_OUTPUT_KEY_PREFIX='/${s3OutputKey}'" }]" --region=ap-south-1
               """
              }
         }
