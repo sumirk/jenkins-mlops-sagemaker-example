@@ -58,7 +58,7 @@ pipeline {
       stage("TrainModel") {
             steps { 
               sh """
-               aws sagemaker create-training-job --training-job-name ${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID} --algorithm-specification TrainingImage="${params.ECRURI}:${env.BUILD_ID}",TrainingInputMode="File" --role-arn ${params.SAGEMAKER_EXECUTION_ROLE} --input-data-config '{"ChannelName": "training", "DataSource": { "S3DataSource": { "S3DataType": "S3Prefix", "S3Uri": "s3://${params.DATATARGETBUCKET}/input/${env.BUILD_ID}/training/"}}}' --resource-config InstanceType='ml.c4.2xlarge',InstanceCount=1,VolumeSizeInGB=5 --output-data-config S3OutputPath='${S3_MODEL_ARTIFACTS}' --hyper-parameters {"epochs": "2000","layers": "2", "dense_layer": "64","batch_size": "8"}  --stopping-condition MaxRuntimeInSeconds=3600
+               aws sagemaker create-training-job --training-job-name ${params.SAGEMAKER_TRAINING_JOB}-${env.BUILD_ID} --algorithm-specification TrainingImage="${params.ECRURI}:${env.BUILD_ID}",TrainingInputMode="File" --role-arn ${params.SAGEMAKER_EXECUTION_ROLE} --input-data-config '{"ChannelName": "training", "DataSource": { "S3DataSource": { "S3DataType": "S3Prefix", "S3Uri": "s3://${params.DATATARGETBUCKET}/input/${env.BUILD_ID}/training/"}}}' --resource-config InstanceType='ml.c4.2xlarge',InstanceCount=1,VolumeSizeInGB=5 --output-data-config S3OutputPath='${S3_MODEL_ARTIFACTS}' --hyper-parameters epochs=2000,layers=2,dense_layer=64,batch_size=8}  --stopping-condition MaxRuntimeInSeconds=3600
               """
              }
         }
