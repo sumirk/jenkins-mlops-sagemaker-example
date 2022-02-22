@@ -48,7 +48,7 @@ pipeline {
             steps {
               script {
                   sh """ 
-                    sleep 480
+                    sleep 200
                     """
                     
                   }
