@@ -66,7 +66,7 @@ pipeline {
       stage("TrainStatus") {
             steps {
               script {"""
-                    sleep 240
+                    sleep 900
                     """
                     
                   }
